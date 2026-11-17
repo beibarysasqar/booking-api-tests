@@ -1,4 +1,4 @@
-# booking-api-tests
+# Booking API Tests
 
 My API tests for [Restful-booker](https://restful-booker.herokuapp.com), a public demo API for hotel bookings.
 Written in C# with NUnit and plain `HttpClient`.
