@@ -1,0 +1,34 @@
+stages:
+  - test
+
+test-linux:
+  stage: test
+  # pwsh already comes with the SDK image
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  script:
+    - pwsh ./scripts/run-tests.ps1
+  artifacts:
+    when: always
+    paths:
+      - TestResults/
+    expire_in: 1 week
+
+test-windows:
+  stage: test
+  tags:
+    - saas-windows-medium-amd64
+  when: manual
+  allow_failure: true
+  before_script:
+    # the shared Windows runner doesn't have .NET 10, so install it first
+    - Invoke-WebRequest -Uri https://dot.net/v1/dotnet-install.ps1 -OutFile dotnet-install.ps1
+    - ./dotnet-install.ps1 -Channel 10.0 -InstallDir "$env:USERPROFILE\.dotnet"
+    - $env:PATH = "$env:USERPROFILE\.dotnet;$env:PATH"
+    - dotnet --version
+  script:
+    - pwsh ./scripts/run-tests.ps1
+  artifacts:
+    when: always
+    paths:
+      - TestResults/
+    expire_in: 1 week
