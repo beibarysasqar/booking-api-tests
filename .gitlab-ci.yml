@@ -3,8 +3,11 @@ stages:
 
 test-linux:
   stage: test
-  # pwsh already comes with the SDK image
+  # SDK image has no PowerShell, so install it as a .NET tool
   image: mcr.microsoft.com/dotnet/sdk:10.0
+  before_script:
+    - dotnet tool install --global PowerShell
+    - export PATH="$PATH:$HOME/.dotnet/tools"
   script:
     - pwsh ./scripts/run-tests.ps1
   artifacts:
